@@ -2,11 +2,16 @@
 
 from datetime import datetime, timedelta
 from collections import defaultdict
+from operator import itemgetter
 
+#parse project dates in the right format
 def parse_date(date_str):
     return datetime.strptime(date_str, "%m/%d/%y").date()
 
-def determine_reimbursement_rate():
+
+#determine the reimbursement rate 
+#depending on the city type and travel/full day
+def determine_reimbursement_rate(cost_type, is_travel):
     if is_travel:
         if cost_type=="low":
             return 45
@@ -17,6 +22,26 @@ def determine_reimbursement_rate():
             return 75
         else:
             return 85
+        
+#merge overlapping projects into one single project
+def merge_projects(projects):
+    if not projects:
+        return []
+    
+    projects.sort(key=itemgetter("start"))
+
+    merged_projects = [projects[0]]
+
+    for project in projects[1:]:
+        last_project = merged_projects[-1]
+        if project["start"] <= last_project["end"] + timedelta(days=1):  
+            last_project["end"] = max(last_project["end"], project["end"]) 
+        else:
+            merged_projects.append(project)
+    
+    return merged_projects
+    
+
 
 
 
@@ -44,6 +69,10 @@ def main():
             {"start": parse_date("10/2/24"), "end": parse_date("10/6/24"), "cost": "high"},
         ],
     ]
+
+    #TODO
+    #loop through scenarios and implement funciton to calculate the reimbursement
+    #return cost
 
 
 if __name__ == "__main__":
