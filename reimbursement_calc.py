@@ -24,7 +24,7 @@ def calculate_reimbursement(projects):
     sorted_projects = sorted(projects, key=itemgetter("start"))
 
     if not sorted_projects:
-        return []
+        return 0
     
     timeline = {}
     
@@ -79,9 +79,6 @@ def main():
         ],
     ]
 
-    # calculate and print the reimbursement total for each set
-    # expected_results = [240, 605, 490, 410]
-        # from my own calculations
     for i, scenario in enumerate(scenarios, 1):
         reimbursement = calculate_reimbursement(scenario)
         print(f"Set {i}: Reimbursement = ${reimbursement}")
